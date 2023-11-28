@@ -17,6 +17,6 @@ public class Wc(IFiles files, TextWriter textWriter)
     public void InvokeReadBytes(FileMeta meta)
     {
         var bytes = files.ReadAllBytes(meta.FileInfo.FullName).LongLength;
-        textWriter.WriteLine(Wc.GetOutput($"{bytes}", meta.InputPath));
+        textWriter.WriteLine(GetOutput($"{bytes}", meta.InputPath));
     }
 }
