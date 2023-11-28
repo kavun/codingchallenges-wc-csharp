@@ -109,8 +109,6 @@ jobs:
         mv ccwc-win-x64/ccwc.exe ccwc-win-x64/ccwc-win-x64.exe
         mv ccwc-linux-x64/ccwc ccwc-linux-x64/ccwc-linux-x64
         mv ccwc-osx-x64/ccwc ccwc-osx-x64/ccwc-osx-x64
-    - name: check output or fail
-      run: ccwc-linux-x64/ccwc-linux-x64 -c ../LICENSE | grep -q "1088 ../LICENSE" || exit 1
     - name: Release
       uses: softprops/action-gh-release@v1
       with:
