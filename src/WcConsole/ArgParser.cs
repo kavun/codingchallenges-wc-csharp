@@ -37,7 +37,7 @@ public static partial class ArgParser
 
         if (passedOptions.Length == 0 || passedOptions.Length == (Enum.GetValues<WcOp>().Length - 1))
         {
-            passedOptions = [WcOp.All];
+            passedOptions = [WcOp.Default];
         }
 
         return passedOptions;

@@ -33,14 +33,14 @@ public class ArgParserTests
     public void ParseOp_DefaultsToAll()
     {
         var actual = ArgParser.Parse([]);
-        Assert.Equal([WcOp.All], actual);
+        Assert.Equal([WcOp.Default], actual);
     }
 
     [Fact]
     public void ParseOp_ReturnsAll()
     {
         var actual = ArgParser.Parse(["-w", "-m", "-l", "-c"]);
-        Assert.Equal([WcOp.All], actual);
+        Assert.Equal([WcOp.Default], actual);
     }
 
     [Fact]

@@ -1,28 +1,30 @@
-﻿namespace WcConsole;
-public record SourceMaterialResponse(string InputString, string? FilePath, bool IsError = false, string? ErrorMessage = default);
+namespace WcConsole;
+
+public record SourceMaterialResponse(
+    TextReader? InputString,
+    string? FilePath);
+
 public static class SourceMaterial
 {
-    public static async Task<SourceMaterialResponse> GetAsync(string[] args, CancellationToken cancellationToken)
+    public static SourceMaterialResponse Get(string[] args)
     {
         string? inputPath = null;
         var lastArg = args.Length > 0 ? args.Last() : string.Empty;
-        string? input;
+        TextReader? input;
         if (!string.IsNullOrWhiteSpace(lastArg) && !lastArg.StartsWith('-'))
         {
             inputPath = lastArg;
             var file = new FileInfo(lastArg);
             if (!file.Exists)
             {
-                return new SourceMaterialResponse(string.Empty, inputPath, true, "File does not exist");
+                return new SourceMaterialResponse(null, inputPath);
             }
-            input = await File.ReadAllTextAsync(lastArg, cancellationToken);
+            input = new StreamReader(file.FullName);
         }
         else
         {
-            input = await Console.In.ReadToEndAsync(cancellationToken);
+            input = Console.In;
         }
-
-        input ??= string.Empty;
 
         return new SourceMaterialResponse(input, inputPath);
     }

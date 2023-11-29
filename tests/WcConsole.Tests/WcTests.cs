@@ -1,52 +1,59 @@
-﻿namespace WcConsole.Tests;
+using System.Text;
+
+namespace WcConsole.Tests;
 public class WcTests
 {
-    private readonly StringWriter _fakeConsole;
-    private readonly SingleLineWriter _lineWriter;
-
-    public WcTests()
+    [Fact]
+    public void GetResult_Tabbed()
     {
-        _fakeConsole = new StringWriter();
-        _lineWriter = new SingleLineWriter(_fakeConsole);
+        var result = Wc.GetResult([WcOp.Lines, WcOp.Words, WcOp.Bytes, WcOp.Chars], null, new WCounts(0, 0, 0, 0));
+        Assert.Equal("0\t0\t0\t0\t", result);
     }
 
     [Fact]
-    public void InvokeReadBytes()
+    public void GetResult_Tabbed_WithFileName()
     {
-        var wc = new Wc("hello", _lineWriter);
-        wc.InvokeCountBytes();
-        Assert.Equal("  5", _fakeConsole.ToString());
+        var result = Wc.GetResult([WcOp.Lines, WcOp.Words, WcOp.Bytes, WcOp.Chars], "kavun", new WCounts(0, 0, 0, 0));
+        Assert.Equal("0\t0\t0\t0\tkavun", result);
     }
 
-    [Fact]
-    public void InvokeReadLines()
+    [Theory]
+    [InlineData("../../../../../input/test.txt", 7145)]
+    [InlineData("../../../../../input/test2.txt", 1)]
+    public void GetCounts_Lines(string filePath, ulong expected)
     {
-        var wc = new Wc("hello", _lineWriter);
-        wc.InvokeCountLines();
-        Assert.Equal("  1", _fakeConsole.ToString());
+        using var reader = new StreamReader(filePath, Encoding.UTF8);
+        var counts = Wc.GetCounts(reader);
+        Assert.Equal(expected, counts.Lines);
     }
 
-    [Fact]
-    public void InvokeReadWords()
+    [Theory]
+    [InlineData("../../../../../input/test.txt", 58164)]
+    [InlineData("../../../../../input/test2.txt", 2)]
+    public void GetCounts_Words(string filePath, ulong expected)
     {
-        var wc = new Wc("hello world", _lineWriter);
-        wc.InvokeCountWords();
-        Assert.Equal("  2", _fakeConsole.ToString());
+        using var reader = new StreamReader(filePath, Encoding.UTF8);
+        var counts = Wc.GetCounts(reader);
+        Assert.Equal(expected, counts.Words);
     }
 
-    [Fact]
-    public void InvokeReadChars()
+    [Theory]
+    [InlineData("../../../../../input/test.txt", 342190)]
+    [InlineData("../../../../../input/test2.txt", 8)]
+    public void GetCounts_Bytes(string filePath, ulong expected)
     {
-        var wc = new Wc("hello", _lineWriter);
-        wc.InvokeCountChars();
-        Assert.Equal("  5", _fakeConsole.ToString());
+        using var reader = new StreamReader(filePath, Encoding.UTF8);
+        var counts = Wc.GetCounts(reader);
+        Assert.Equal(expected, counts.Bytes);
     }
 
-    [Fact]
-    public void InvokeAll()
+    [Theory]
+    [InlineData("../../../../../input/test.txt", 342190)]
+    [InlineData("../../../../../input/test2.txt", 8)]
+    public void GetCounts_Chars(string filePath, ulong expected)
     {
-        var wc = new Wc("hello world", _lineWriter);
-        wc.InvokeAll();
-        Assert.Equal("  1  2  11", _fakeConsole.ToString());
+        using var reader = new StreamReader(filePath, Encoding.UTF8);
+        var counts = Wc.GetCounts(reader);
+        Assert.Equal(expected, counts.Chars);
     }
 }

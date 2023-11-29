@@ -2,7 +2,7 @@
 
 public enum WcOp
 {
-    All = 0,
+    Default = 0,
     Lines = 1,
     Words = 2,
     Bytes = 3,
