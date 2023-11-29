@@ -5,9 +5,9 @@ public static class SourceMaterial
     public static async Task<SourceMaterialResponse> GetAsync(string[] args, CancellationToken cancellationToken)
     {
         string? inputPath = null;
-        var lastArg = args.Last();
+        var lastArg = args.Length > 0 ? args.Last() : string.Empty;
         string? input;
-        if (!lastArg.StartsWith('-'))
+        if (!string.IsNullOrWhiteSpace(lastArg) && !lastArg.StartsWith('-'))
         {
             inputPath = lastArg;
             var file = new FileInfo(lastArg);
