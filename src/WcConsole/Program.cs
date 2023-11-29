@@ -2,25 +2,22 @@ using WcConsole;
 
 try
 {
-    using var canceller = new ConsoleCanceller();
+    using var _ = new ConsoleCanceller();
 
-    var passedOptions = ArgParser.Parse(args);
+    var options = ArgParser.ParseOptions(args);
+    var filePath = ArgParser.ParseFilePath(args);
+    var textReader = TextSourcer.GetFileOrStdIn(filePath);
+    var result = WordCounter.GetResult(textReader, options, filePath);
 
-    var response = SourceMaterial.Get(args);
-    if (response.InputString is null)
-    {
-        Console.Error.WriteLine("no input");
-        return 1;
-    }
-
-    var result = Wc.GetResult(response.InputString, passedOptions, response.FilePath);
-
-    Console.WriteLine(result);
-
+    Console.Out.WriteLine(result);
     return 0;
 }
 catch (Exception ex)
 {
+#if DEBUG
     Console.Error.WriteLine(ex);
+#else
+    Console.Error.WriteLine(ex.Message);
+#endif
     return 1;
 }

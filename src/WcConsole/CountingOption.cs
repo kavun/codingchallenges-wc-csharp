@@ -1,6 +1,6 @@
-﻿namespace WcConsole;
+namespace WcConsole;
 
-public enum WcOp
+public enum CountingOption
 {
     Default = 0,
     Lines = 1,

@@ -1,33 +1,34 @@
-﻿using System.Text.RegularExpressions;
+using System.Text.RegularExpressions;
 
 namespace WcConsole;
+
 public static partial class ArgParser
 {
-    public static WcOp[] Parse(string[] args)
+    public static CountingOption[] ParseOptions(string[] args)
     {
-        var doubleDashArgs = new Dictionary<string, WcOp>
+        var doubleDashArgs = new Dictionary<string, CountingOption>
         {
-            { "--lines", WcOp.Lines },
-            { "--words", WcOp.Words },
-            { "--bytes", WcOp.Bytes },
-            { "--chars", WcOp.Chars },
+            { "--lines", CountingOption.Lines },
+            { "--words", CountingOption.Words },
+            { "--bytes", CountingOption.Bytes },
+            { "--chars", CountingOption.Chars },
         };
 
-        var singleDashArgs = new Dictionary<char, WcOp>
+        var singleDashArgs = new Dictionary<char, CountingOption>
         {
-            { 'l', WcOp.Lines },
-            { 'w', WcOp.Words},
-            { 'c', WcOp.Bytes },
-            { 'm', WcOp.Chars }
+            { 'l', CountingOption.Lines },
+            { 'w', CountingOption.Words },
+            { 'c', CountingOption.Bytes },
+            { 'm', CountingOption.Chars }
         };
 
-        WcOp[] passedOptions =
+        CountingOption[] passedOptions =
         [
             .. args
                 .Where(doubleDashArgs.ContainsKey)
                 .Select(arg => doubleDashArgs[arg]),
             .. args
-                .Where(opt => PosixArgRegex().IsMatch(opt))
+                .Where(opt => SingleDashArgRegex().IsMatch(opt))
                 .SelectMany(arg => arg.TrimStart('-').ToCharArray())
                 .Where(singleDashArgs.ContainsKey)
                 .Select(arg => singleDashArgs[arg])
@@ -35,14 +36,25 @@ public static partial class ArgParser
 
         passedOptions = [.. passedOptions.Distinct().OrderBy(op => op)];
 
-        if (passedOptions.Length == 0 || passedOptions.Length == (Enum.GetValues<WcOp>().Length - 1))
+        if (passedOptions.Length == 0)
         {
-            passedOptions = [WcOp.Default];
+            passedOptions = [CountingOption.Default];
         }
 
         return passedOptions;
     }
 
+    public static string? ParseFilePath(string[] args)
+    {
+        string? filePath = args.LastOrDefault();
+        if (!string.IsNullOrWhiteSpace(filePath) && !filePath.StartsWith('-'))
+        {
+            return filePath;
+        }
+
+        return null;
+    }
+
     [GeneratedRegex("^\\-[^\\-]")]
-    private static partial Regex PosixArgRegex();
+    private static partial Regex SingleDashArgRegex();
 }

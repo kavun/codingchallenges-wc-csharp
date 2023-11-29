@@ -58,6 +58,10 @@ function Invoke-TestRun([string]$Rest) {
         $ccwc2 | Write-Host -F DarkGray
         Invoke-Expression $ccwc2
     }
+
+    $ccwcBogus = "$PSScriptRoot\src\WcConsole\bin\Release\net8.0\win-x64\publish\WcConsole.exe -- $PSScriptRoot\bogus.file"
+    $ccwcBogus | Write-Host -F DarkGray
+    Invoke-Expression $ccwcBogus
 }
 
 function Invoke-Test {

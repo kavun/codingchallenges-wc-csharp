@@ -1,4 +1,5 @@
-﻿namespace WcConsole;
+namespace WcConsole;
+
 public class ConsoleCanceller : IDisposable
 {
     public ConsoleCanceller()
