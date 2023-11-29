@@ -1,67 +1,52 @@
-namespace WcConsole.Tests;
+﻿namespace WcConsole.Tests;
 public class WcTests
 {
-    [Fact]
-    public void GetOutput_ReturnsConcatenatedString()
-    {
-        // Act
-        var actual = Wc.GetOutput("1", "2");
+    private readonly StringWriter _fakeConsole;
+    private readonly SingleLineWriter _lineWriter;
 
-        // Assert
-        Assert.Equal("1 2", actual);
+    public WcTests()
+    {
+        _fakeConsole = new StringWriter();
+        _lineWriter = new SingleLineWriter(_fakeConsole);
     }
 
     [Fact]
-    public void GetFileMeta_ThrowsInvalidOperationException_WhenFileDoesNotExist()
+    public void InvokeReadBytes()
     {
-        // Arrange
-        var files = new TestFiles(false);
-        var wc = new Wc(files, Console.Out);
-
-        // Act
-        var ex = Assert.Throws<InvalidOperationException>(() => wc.GetFileMeta("file"));
-
-        // Assert
-        Assert.Equal("File does not exist", ex.Message);
+        var wc = new Wc("hello", _lineWriter);
+        wc.InvokeReadBytes();
+        Assert.Equal("  5", _fakeConsole.ToString());
     }
 
     [Fact]
-    public void GetFileMeta_ReturnsFileMeta_WhenFileExists()
+    public void InvokeReadLines()
     {
-        // Arrange
-        var files = new TestFiles(true);
-        var wc = new Wc(files, Console.Out);
-
-        // Act
-        var actual = wc.GetFileMeta("file");
-
-        // Assert
-        Assert.Equal("file", actual.InputPath);
+        var wc = new Wc("hello", _lineWriter);
+        wc.InvokeReadLines();
+        Assert.Equal("  1", _fakeConsole.ToString());
     }
 
     [Fact]
-    public void InvokeReadBytes_WritesBytesToConsole()
+    public void InvokeReadWords()
     {
-        // Arrange
-        var file = new FileMeta(new FileInfo("file/name"), "file/name");
-        var console = new StringWriter();
-        var wc = new Wc(new TestFiles(true, []), console);
-        var expected = $"0 file/name{Environment.NewLine}";
-
-        // Act
-        wc.InvokeReadBytes(file);
-
-        // Assert
-        Assert.Equal(expected, console.ToString());
+        var wc = new Wc("hello world", _lineWriter);
+        wc.InvokeReadWords();
+        Assert.Equal("  2", _fakeConsole.ToString());
     }
 
-    public class TestFiles(bool exists, byte[]? bytes = default) : IFiles
+    [Fact]
+    public void InvokeReadChars()
     {
-        public bool Exists(FileInfo file) => exists;
+        var wc = new Wc("hello", _lineWriter);
+        wc.InvokeReadChars();
+        Assert.Equal("  5", _fakeConsole.ToString());
+    }
 
-        public byte[] ReadAllBytes(string path)
-        {
-            return bytes ?? [];
-        }
+    [Fact]
+    public void InvokeAll()
+    {
+        var wc = new Wc("hello world", _lineWriter);
+        wc.InvokeAll();
+        Assert.Equal("  1  2  11", _fakeConsole.ToString());
     }
 }
