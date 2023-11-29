@@ -2,49 +2,16 @@
 
 try
 {
-    using var cancellationTokenSource = new CancellationTokenSource();
-    Console.CancelKeyPress += (s, e) =>
+    using var canceller = new ConsoleCanceller();
+    var passedOptions = ArgParser.Parse(args);
+    var response = await SourceMaterial.GetAsync(args, canceller.Token);
+    if (response.IsError)
     {
-        Console.WriteLine("Canceling...");
-        cancellationTokenSource.Cancel();
-        e.Cancel = true;
-    };
-
-    var passedOptions = ArgParser.ParseOp(args);
-
-    string? inputPath = null;
-    string? input = null;
-    if (args.Length == 0)
-    {
-        input = await Console.In.ReadToEndAsync(cancellationTokenSource.Token);
-    }
-    else
-    {
-        var last = args.Last();
-        if (!last.StartsWith('-'))
-        {
-            inputPath = last;
-            var file = new FileInfo(last);
-            if (!file.Exists)
-            {
-                Console.Error.WriteLine("File does not exist");
-                return 1;
-            }
-            input = await File.ReadAllTextAsync(last, cancellationTokenSource.Token);
-        }
-        else
-        {
-            input = await Console.In.ReadToEndAsync(cancellationTokenSource.Token);
-        }
-    }
-
-    if (input is null)
-    {
-        Console.Error.WriteLine("Invalid input");
+        Console.Error.WriteLine(response.ErrorMessage);
         return 1;
     }
 
-    var wc = new Wc(input, new SingleLineWriter(Console.Out));
+    var wc = new Wc(response.InputString, new SingleLineWriter(Console.Out));
 
     foreach (var op in passedOptions)
     {
@@ -66,14 +33,14 @@ try
                 wc.InvokeReadChars();
                 break;
             default:
-                Console.Error.WriteLine("Invalid argument");
+                Console.Error.WriteLine($"invalid option");
                 return 1;
         }
     }
 
-    if (inputPath is not null)
+    if (response.FilePath is not null)
     {
-        Console.WriteLine($" {inputPath}");
+        Console.WriteLine($" {response.FilePath}");
     }
     else
     {

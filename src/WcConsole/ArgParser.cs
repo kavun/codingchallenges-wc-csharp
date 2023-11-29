@@ -3,7 +3,7 @@
 namespace WcConsole;
 public static partial class ArgParser
 {
-    public static WcOp[] ParseOp(string[] args)
+    public static WcOp[] Parse(string[] args)
     {
         var doubleDashArgs = new Dictionary<string, WcOp>
         {
@@ -34,11 +34,17 @@ public static partial class ArgParser
             .. args
                 .Where(opt => PosixArgRegex().IsMatch(opt))
                 .SelectMany(arg => arg.TrimStart('-').ToCharArray())
+                .Where(singleDashArgs.ContainsKey)
                 .Select(arg => singleDashArgs[arg])
                 .OrderBy(op => op),
         ];
 
         passedOptions = [.. passedOptions.Distinct().OrderBy(op => op)];
+
+        if (passedOptions.Length == 0 || passedOptions.Length == (Enum.GetValues<WcOp>().Length - 1))
+        {
+            passedOptions = [WcOp.All];
+        }
 
         return passedOptions;
     }

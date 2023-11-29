@@ -2,21 +2,6 @@
 
 namespace WcConsole;
 
-public interface ICountWriter
-{
-    void Write(long count);
-}
-
-public class SingleLineWriter(TextWriter textWriter) : ICountWriter
-{
-    private const string Prepend = "  ";
-    public void Write(long count)
-    {
-        textWriter.Write(Prepend);
-        textWriter.Write(count.ToString());
-    }
-}
-
 public class Wc(string input, ICountWriter writer)
 {
     public int CountBytes() => Encoding.UTF8.GetByteCount(input);
