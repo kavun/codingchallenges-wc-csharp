@@ -21,16 +21,16 @@ try
                 wc.InvokeAll();
                 break;
             case WcOp.Bytes:
-                wc.InvokeReadBytes();
+                wc.InvokeCountBytes();
                 break;
             case WcOp.Lines:
-                wc.InvokeReadLines();
+                wc.InvokeCountLines();
                 break;
             case WcOp.Words:
-                wc.InvokeReadWords();
+                wc.InvokeCountWords();
                 break;
             case WcOp.Chars:
-                wc.InvokeReadChars();
+                wc.InvokeCountChars();
                 break;
             default:
                 Console.Error.WriteLine($"invalid option");

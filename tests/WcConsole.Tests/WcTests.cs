@@ -14,7 +14,7 @@ public class WcTests
     public void InvokeReadBytes()
     {
         var wc = new Wc("hello", _lineWriter);
-        wc.InvokeReadBytes();
+        wc.InvokeCountBytes();
         Assert.Equal("  5", _fakeConsole.ToString());
     }
 
@@ -22,7 +22,7 @@ public class WcTests
     public void InvokeReadLines()
     {
         var wc = new Wc("hello", _lineWriter);
-        wc.InvokeReadLines();
+        wc.InvokeCountLines();
         Assert.Equal("  1", _fakeConsole.ToString());
     }
 
@@ -30,7 +30,7 @@ public class WcTests
     public void InvokeReadWords()
     {
         var wc = new Wc("hello world", _lineWriter);
-        wc.InvokeReadWords();
+        wc.InvokeCountWords();
         Assert.Equal("  2", _fakeConsole.ToString());
     }
 
@@ -38,7 +38,7 @@ public class WcTests
     public void InvokeReadChars()
     {
         var wc = new Wc("hello", _lineWriter);
-        wc.InvokeReadChars();
+        wc.InvokeCountChars();
         Assert.Equal("  5", _fakeConsole.ToString());
     }
 

@@ -11,22 +11,22 @@ public class Wc(string input, ICountWriter writer)
         .Count();
     public int CountChars() => input.Length;
 
-    public void InvokeReadBytes()
+    public void InvokeCountBytes()
     {
         writer.Write(CountBytes());
     }
 
-    public void InvokeReadLines()
+    public void InvokeCountLines()
     {
         writer.Write(CountLines());
     }
 
-    public void InvokeReadWords()
+    public void InvokeCountWords()
     {
         writer.Write(CountWords());
     }
 
-    public void InvokeReadChars()
+    public void InvokeCountChars()
     {
         writer.Write(CountChars());
     }
